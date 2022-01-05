@@ -2,7 +2,7 @@ from flask import Flask,request
 from flask_restful import Api,Resource
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 from binance.client import Client
-
+import json
 
 
 app=Flask(__name__)
@@ -15,7 +15,8 @@ client = Client("QZnNV8z2rEjhyu3Eq47NVZWmSRNCcJ7eej8xeDa4CEHxLGH2DBifj9IWF9XM9Rt
 config = {
   "amount": 15,
   "marginType": "ISOLATED",
-  "leverage": 2
+  "leverage": 4,
+  "type" : "MARKET"
 }
 
 
@@ -31,18 +32,28 @@ config = {
 @app.route("/open-trade-future",methods=['POST'])
 def openTradeFuture():
   if request.method=="POST":
-      data=request.form
-
+      data=json.loads(request.data)
+     
       # set margin type
       # marginStatus=client.futures_change_margin_type(symbol="BTCUSDT",marginType="CROSSED")
 
+      
       # set leverage
       leverageStatus=client.futures_change_leverage(symbol=data["symbol"],leverage=config["leverage"])
 
+      #current price
+      symbolPrice=client.get_symbol_ticker(symbol=data["symbol"])
+      print(symbolPrice)
+
+      #calculate amount
+      amount= config["amount"]/float(symbolPrice["price"])
+      print(amount)
+
       # execute order
+      executedOrder=client.futures_create_order(symbol=data["symbol"],side=data["side"],type=config["type"],quantity=amount)
 
       # return config["leverage"]
-      return {"status":"success","LeverageStatus":leverageStatus}
+      return {"status":"success","LeverageStatus":leverageStatus,"excecutedOrder":executedOrder}
 
 
 
