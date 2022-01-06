@@ -1,1 +1,1 @@
-web: gunicorn app: trading/test
+web: gunicorn trading/test: app
