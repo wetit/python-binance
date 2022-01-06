@@ -36,7 +36,7 @@ def test():
 
 @app.route("/open-trade-future",methods=['POST'])
 def openTradeFuture():
-  if request.method=="POST":
+  # if request.method=="POST":
       data=json.loads(request.data)
      
       # set margin type
@@ -58,10 +58,8 @@ def openTradeFuture():
       # executedOrder=client.futures_create_order(symbol=data["symbol"],side=data["side"],type=config["type"],quantity=amount)
 
       # return config["leverage"]
-      return {"status":"success","LeverageStatus":leverageStatus}
-
-
+      return {"status":"success"}
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port,debug=True)
