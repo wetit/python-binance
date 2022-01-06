@@ -1,1 +1,1 @@
-web: python trading/test.py
+web: gunicorn app: trading/test

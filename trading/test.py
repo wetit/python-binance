@@ -28,7 +28,7 @@ config = {
 
 # api.add_resource(openTrade,"/trade")
 
-@app.route("/test",methods=['GET'])
+@app.route("/",methods=['GET'])
 def test():
   return {"message":"test"}
 
