@@ -50,13 +50,12 @@ def openTradeFuture():
       print(amount)
 
       # execute order
-      executedOrder=client.futures_create_order(symbol=data["symbol"],side=data["side"],type=config["type"],quantity=amount)
+      # executedOrder=client.futures_create_order(symbol=data["symbol"],side=data["side"],type=config["type"],quantity=amount)
 
       # return config["leverage"]
-      return {"status":"success","LeverageStatus":leverageStatus,"excecutedOrder":executedOrder}
-
+      return {"status":"success","LeverageStatus":leverageStatus}
 
 
 
 if __name__ == "__main__":
-    app.run(debug=True,port=80)
+    app.run()
