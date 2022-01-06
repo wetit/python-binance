@@ -28,6 +28,10 @@ config = {
 
 # api.add_resource(openTrade,"/trade")
 
+@app.route("/test",methods=['GET'])
+def test():
+  return {"message":"test"}
+
 
 @app.route("/open-trade-future",methods=['POST'])
 def openTradeFuture():
