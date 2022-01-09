@@ -20,7 +20,7 @@ endPoint = "/api/v1/order"
 
 
 config = {
-    "amount": 10,
+    "amount": 15,
     "marginType": "ISOLATED",
     "leverage": 1,
     "type": "MARKET"
@@ -68,7 +68,7 @@ def openTradeFuture():
             
     
     if precisedQuantity > 0:
-        quantity = math.floor(precisedQuantity)
+        quantity = math.round(precisedQuantity)
         print(quantity)
     else:
         quantity = downward(precisedQuantity)
