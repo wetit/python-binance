@@ -68,7 +68,7 @@ def openTradeFuture():
             
     
     if precisedQuantity > 0:
-        quantity = round(precisedQuantity)
+        quantity = math.floor(precisedQuantity)
         print(quantity)
     else:
         quantity = downward(precisedQuantity)
