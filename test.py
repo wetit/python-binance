@@ -58,32 +58,27 @@ def openTradeFuture():
     symbolPrice = client.get_symbol_ticker(symbol=data["symbol"])
 
     # calculate asset amount
-    symbol_info = client.get_symbol_info(data["symbol"])
-    step_size = 0.0
-    for f in symbol_info['filters']:
-        if f['filterType'] == 'LOT_SIZE':
-            step_size = float(f['stepSize'])
-            precision = int(round(-math.log(step_size, 10), 0))
-            precisedQuantity =   float(round(config["amount"]/float(symbolPrice["price"]), precision)) 
+    # symbol_info = client.get_symbol_info(data["symbol"])
+    # step_size = 0.0
+    # for f in symbol_info['filters']:
+    #     if f['filterType'] == 'LOT_SIZE':
+    #         step_size = float(f['stepSize'])
+    #         precision = int(round(-math.log(step_size, 10), 0))
+    #         precisedQuantity =   float(round(config["amount"]/float(symbolPrice["price"]), precision)) 
+    #         print(precisedQuantity)
+    precisedQuantity= config["amount"]/float(symbolPrice["price"])
+    print('precisedQuantity:'+str(precisedQuantity))
+    print('precisedDownward:'+str(downward(precisedQuantity)))
             
-    
+    # quantity=precisedQuantity
     if precisedQuantity > 0:
-        quantity = math.floor(precisedQuantity)
-        print(quantity)
+        quantity = round(precisedQuantity)
+        print('quantity:'+str(quantity))
     else:
         quantity = downward(precisedQuantity)
         print(quantity)
 
     
-
-    # execute order
-    # if data["side"] == "BUY" and data["positionSide"] == "LONG":
-        # order=client.futures_create_order(symbol = data["symbol"], side = "BUY",positionSide="LONG", type = 'MARKET', quantity = quantity)
-        # client.futures_create_order(symbol = data["symbol"], side = "BUY",positionSide="LONG", type = 'MARKET', quantity = quantity)
-    # elif data["side"] == "SELL" and data["positionSide"] == "SHORT":
-        # client.futures_create_order(symbol = data["symbol"], side = "SELL",positionSide="LONG", type = 'MARKET', quantity = quantity)
-        # order=client.futures_create_order(symbol = data["symbol"], side = "SELL",positionSide="SHORT", type = 'MARKET', quantity = quantity)
-    # order=client.futures_create_order(symbol = data["symbol"], side = data["side"],type = 'MARKET', closePosition=True)
     
     order=client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
     print(order)
