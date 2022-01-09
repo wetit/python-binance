@@ -1,8 +1,10 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
-from requests.models import Response
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 from binance.client import Client
+from binance.helpers import round_step_size
+from datetime import datetime
+from binance.exceptions import BinanceAPIException
 import os
 import json
 import math
@@ -12,6 +14,9 @@ api = Api(app)
 
 
 client = Client("QZnNV8z2rEjhyu3Eq47NVZWmSRNCcJ7eej8xeDa4CEHxLGH2DBifj9IWF9XM9Rtj", "8Fnk1S8A8LaS2hGI1iz0Jqkieq3brIpuiyS7TaKVdDsGt0rD5xciJJ4FworHNXXJ")
+
+brul = "https://api.binance.com"
+endPoint = "/api/v1/order"
 
 
 config = {
@@ -24,8 +29,17 @@ config = {
 
 @app.route("/", methods=['GET'])
 def test():
-    return {"message": "test"}
+    time=datetime.fromtimestamp(int("1641723878511")/1000)
+    return {"message": time}
 
+def downward(value):
+    round(value) 
+    i = 0
+    cnum = value
+    while (cnum != 0 and cnum < 1):
+        cnum *= 10;
+        i = i+1;
+    return (math.floor(cnum) * 1) / math.pow(10, i)
 
 
 @app.route("/open-trade-future", methods=['POST'])
@@ -37,35 +51,47 @@ def openTradeFuture():
     # marginStatus=client.futures_change_margin_type(symbol="BTCUSDT",marginType="CROSSED")
 
     # set leverage
-    client.futures_change_leverage(symbol=data["symbol"], leverage=config["leverage"])
-
+    leverage=client.futures_change_leverage(symbol=data["symbol"], leverage=config["leverage"])
+    print(leverage)
+    
     # current price
     symbolPrice = client.get_symbol_ticker(symbol=data["symbol"])
-    # print(symbolPrice)
 
-    # precision
+    # calculate asset amount
     symbol_info = client.get_symbol_info(data["symbol"])
     step_size = 0.0
     for f in symbol_info['filters']:
         if f['filterType'] == 'LOT_SIZE':
             step_size = float(f['stepSize'])
             precision = int(round(-math.log(step_size, 10), 0))
-            quantity = float(round(config["amount"]/float(symbolPrice["price"]), precision))
+            precisedQuantity =   float(round(config["amount"]/float(symbolPrice["price"]), precision)) 
+            
+    
+    if precisedQuantity > 0:
+        quantity = math.floor(precisedQuantity)
+        print(quantity)
+    else:
+        quantity = downward(precisedQuantity)
+        print(quantity)
 
-    #amount
-    amount = quantity
-    print(amount)
-    print(data["symbol"])
     
 
     # execute order
-    # executedOrder=client.futures_create_order(symbol=data["symbol"],side=data["side"],type=config["type"],quantity=amount)
+    # if data["side"] == "BUY" and data["positionSide"] == "LONG":
+        # order=client.futures_create_order(symbol = data["symbol"], side = "BUY",positionSide="LONG", type = 'MARKET', quantity = quantity)
+        # client.futures_create_order(symbol = data["symbol"], side = "BUY",positionSide="LONG", type = 'MARKET', quantity = quantity)
+    # elif data["side"] == "SELL" and data["positionSide"] == "SHORT":
+        # client.futures_create_order(symbol = data["symbol"], side = "SELL",positionSide="LONG", type = 'MARKET', quantity = quantity)
+        # order=client.futures_create_order(symbol = data["symbol"], side = "SELL",positionSide="SHORT", type = 'MARKET', quantity = quantity)
+    # order=client.futures_create_order(symbol = data["symbol"], side = data["side"],type = 'MARKET', closePosition=True)
+    
+    order=client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+    print(order)
+    
+   
+    return {"result" : order}
     
     
-    return {
-        "status": "success",
-        # "executedOrder":client.futures_coin_position_information()
-    }
 
 
 if __name__ == "__main__":
