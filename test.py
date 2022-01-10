@@ -15,14 +15,12 @@ api = Api(app)
 
 client = Client("QZnNV8z2rEjhyu3Eq47NVZWmSRNCcJ7eej8xeDa4CEHxLGH2DBifj9IWF9XM9Rtj", "8Fnk1S8A8LaS2hGI1iz0Jqkieq3brIpuiyS7TaKVdDsGt0rD5xciJJ4FworHNXXJ")
 
-brul = "https://api.binance.com"
-endPoint = "/api/v1/order"
 
 
 config = {
     "amount": 15,
-    "marginType": "ISOLATED",
-    "leverage": 1,
+    "marginType": "CROSSED",
+    "leverage": 2,
     "type": "MARKET"
 }
 
@@ -44,11 +42,13 @@ def downward(value):
 
 @app.route("/open-trade-future", methods=['POST'])
 def openTradeFuture():
-    # if request.method=="POST":
     data = json.loads(request.data)
 
     # set margin type
-    # marginStatus=client.futures_change_margin_type(symbol="BTCUSDT",marginType="CROSSED")
+    try:
+        client.futures_change_margin_type(symbol=data["symbol"],marginType=config["marginType"])
+    except BinanceAPIException as e:
+        print(str(e))
 
     # set leverage
     leverage=client.futures_change_leverage(symbol=data["symbol"], leverage=config["leverage"])
@@ -57,15 +57,7 @@ def openTradeFuture():
     # current price
     symbolPrice = client.get_symbol_ticker(symbol=data["symbol"])
 
-    # calculate asset amount
-    # symbol_info = client.get_symbol_info(data["symbol"])
-    # step_size = 0.0
-    # for f in symbol_info['filters']:
-    #     if f['filterType'] == 'LOT_SIZE':
-    #         step_size = float(f['stepSize'])
-    #         precision = int(round(-math.log(step_size, 10), 0))
-    #         precisedQuantity =   float(round(config["amount"]/float(symbolPrice["price"]), precision)) 
-    #         print(precisedQuantity)
+ 
     precisedQuantity= config["amount"]/float(symbolPrice["price"])
     print('precisedQuantity:'+str(precisedQuantity))
     print('precisedDownward:'+str(downward(precisedQuantity)))
