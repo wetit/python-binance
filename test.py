@@ -64,8 +64,8 @@ def openTradeFuture():
             
     # quantity=precisedQuantity
     if precisedQuantity > 0:
-        quantity = round(precisedQuantity)
-        print('quantity:'+str(quantity))
+        quantity = round(precisedQuantity) * config["leverage"]
+        print('size:'+str(quantity))
     else:
         quantity = downward(precisedQuantity)
         print(quantity)
