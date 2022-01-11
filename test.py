@@ -65,18 +65,28 @@ def openTradeFuture():
     # quantity=precisedQuantity
     if precisedQuantity > 0:
         quantity = round(precisedQuantity) * config["leverage"]
-        print('size:'+str(quantity))
+        print('Margin:'+str(quantity))
     else:
         quantity = downward(precisedQuantity)
         print(quantity)
 
     
+    if data["positionSide"] == "LONG" and data["side"] == "BUY":
+        try:
+            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide="SHORT", type = 'MARKET', quantity = quantity)
+            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+        except BinanceAPIException as e:
+            print(str(e))
+    elif data["positionSide"] == "SHORT" and data["side"] == "SELL":
+        try:
+            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide="LONG", type = 'MARKET', quantity = quantity)
+            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+        except BinanceAPIException as e:
+            print(str(e))
     
-    order=client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
-    print(order)
     
    
-    return {"result" : order}
+    return {"symbol" : data["symbol"],"Margin": quantity}
     
     
 
