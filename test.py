@@ -21,9 +21,31 @@ config = {
     "amount": 15,
     "marginType": "CROSSED",
     "leverage": 2,
-    "type": "MARKET"
+    "type": "MARKET",
+    "takeProfitPercent": 0.07
 }
 
+@app.route("/test-take-profit", methods=['GET'])
+def testSetTakeProfit():
+    symbolPrice = client.get_symbol_ticker(symbol="ENJUSDT")
+    stopPrice = float(symbolPrice["price"])  + (float(symbolPrice["price"]) *config["takeProfitPercent"])
+    print(stopPrice)
+    takeProfitOrder=client.futures_create_order(symbol = "ENJUSDT", side = "SELL",positionSide="LONG", type = "TAKE_PROFIT_MARKET",stopPrice = stopPrice,priceProtect=True,timeInForce= "GTE_GTC",price=stopPrice)
+    return takeProfitOrder
+    
+
+# fire orer and set take profit market
+def fireOrder(symbol,side,type,quantity):
+    try:
+        if side == "BUY":
+            client.futures_create_order(symbol = symbol, side = side,positionSide="LONG", type = type, quantity = quantity)
+            # client.futures_create_order(symbol = symbol, side = side,positionSide="LONG", type = "TAKE_PROFIT_MARKET",stopPrice = price + (price*config["takeProfitPercent"]))
+        else:
+            client.futures_create_order(symbol = symbol, side = side,positionSide="SHORT", type = type, quantity = quantity)
+            # client.futures_create_order(symbol = symbol, side = side,positionSide="SHORT", type = "TAKE_PROFIT_MARKET",stopPrice = price - (price*config["takeProfitPercent"]))
+    except BinanceAPIException as e:
+        print(str(e))
+        
 
 @app.route("/", methods=['GET'])
 def test():
@@ -37,7 +59,7 @@ def downward(value):
     while (cnum != 0 and cnum < 1):
         cnum *= 10;
         i = i+1;
-    return (math.floor(cnum) * 1) / math.pow(10, i)
+    return (cnum * 1) / math.pow(10, i)
 
 
 @app.route("/open-trade-future", methods=['POST'])
@@ -71,15 +93,17 @@ def openTradeFuture():
         print(quantity)
 
     
-    if data["positionSide"] == "LONG" and data["side"] == "BUY":
+    if data["side"] == "BUY":
         try:
-            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+            fireOrder(symbol = data["symbol"], side = data["side"], type = 'MARKET', quantity = quantity)
+            # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
             client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide="SHORT", type = 'MARKET', quantity = quantity)
         except BinanceAPIException as e:
             print(str(e))
-    elif data["positionSide"] == "SHORT" and data["side"] == "SELL":
+    elif data["side"] == "SELL":
         try:
-            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+            fireOrder(symbol = data["symbol"], side = data["side"],type = 'MARKET', quantity = quantity)
+            # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
             client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide="LONG", type = 'MARKET', quantity = quantity)  
         except BinanceAPIException as e:
             print(str(e))
