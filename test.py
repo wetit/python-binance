@@ -92,19 +92,20 @@ def openTradeFuture():
         quantity = downward(precisedQuantity)
         print(quantity)
 
+    side = data["side"].upper()
     
-    if data["side"] == "BUY":
+    if side == "BUY":
         try:
-            fireOrder(symbol = data["symbol"], side = data["side"], type = 'MARKET', quantity = quantity)
+            fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
             # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
-            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide="SHORT", type = 'MARKET', quantity = quantity)
+            client.futures_create_order(symbol = data["symbol"], side = side,positionSide="SHORT", type = 'MARKET', quantity = quantity)
         except BinanceAPIException as e:
             print(str(e))
-    elif data["side"] == "SELL":
+    elif side == "SELL":
         try:
-            fireOrder(symbol = data["symbol"], side = data["side"],type = 'MARKET', quantity = quantity)
+            fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
             # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
-            client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide="LONG", type = 'MARKET', quantity = quantity)  
+            client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
         except BinanceAPIException as e:
             print(str(e))
     
