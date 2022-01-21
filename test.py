@@ -94,21 +94,27 @@ def openTradeFuture():
 
     side = data["side"].upper()
     
-    if side == "BUY":
-        try:
-            fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
-            # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
-            client.futures_create_order(symbol = data["symbol"], side = side,positionSide="SHORT", type = 'MARKET', quantity = quantity)
-        except BinanceAPIException as e:
-            print(str(e))
-    elif side == "SELL":
+    # if side == "BUY":
+    #     try:
+    #         fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
+    #         # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+    #         client.futures_create_order(symbol = data["symbol"], side = side,positionSide="SHORT", type = 'MARKET', quantity = quantity)
+    #     except BinanceAPIException as e:
+    #         print(str(e))
+    # elif side == "SELL":
+    #     try:
+    #         fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
+    #         # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
+    #         client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
+    #     except BinanceAPIException as e:
+    #         print(str(e))
+    
+    if side == "SELL":
         try:
             fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
-            # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
             client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
         except BinanceAPIException as e:
             print(str(e))
-    
     
    
     return {"symbol" : data["symbol"],"Margin": quantity}
