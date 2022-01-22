@@ -22,16 +22,19 @@ config = {
     "marginType": "CROSSED",
     "leverage": 2,
     "type": "MARKET",
-    "takeProfitPercent": 0.07
+    "takeProfitPercent": 0.07,
+    "callbackRate": 1,
+    "percentForTralingStop":0.04,
 }
 
 @app.route("/test-take-profit", methods=['GET'])
 def testSetTakeProfit():
-    symbolPrice = client.get_symbol_ticker(symbol="ENJUSDT")
-    stopPrice = float(symbolPrice["price"])  + (float(symbolPrice["price"]) *config["takeProfitPercent"])
-    print(stopPrice)
-    takeProfitOrder=client.futures_create_order(symbol = "ENJUSDT", side = "SELL",positionSide="LONG", type = "TAKE_PROFIT_MARKET",stopPrice = stopPrice,priceProtect=True,timeInForce= "GTE_GTC",price=stopPrice)
-    return takeProfitOrder
+    setTrailingStop(symbol="ADAUSDT",quantity=5,entryPrice=55,side="SELL")
+    # symbolPrice = client.get_symbol_ticker(symbol="ENJUSDT")
+    # price = float(symbolPrice["price"])  + (float(symbolPrice["price"]) *config["takeProfitPercent"])
+    # print(stopPrice)
+    # takeProfitOrder=client.futures_create_order(symbol = "ENJUSDT", side = "SELL",positionSide="LONG", type = "TAKE_PROFIT_MARKET",stopPrice = stopPrice,priceProtect=True,timeInForce= "GTE_GTC",price=stopPrice)
+    # return takeProfitOrder
     
 
 # fire orer and set take profit market
@@ -45,6 +48,19 @@ def fireOrder(symbol,side,type,quantity):
             # client.futures_create_order(symbol = symbol, side = side,positionSide="SHORT", type = "TAKE_PROFIT_MARKET",stopPrice = price - (price*config["takeProfitPercent"]))
     except BinanceAPIException as e:
         print(str(e))
+        
+        
+
+def setTrailingStop(symbol,quantity,entryPrice,side):
+    if side == "BUY":
+        activationPrice = entryPrice+(entryPrice*config["percentForTralingStop"])/(config["leverage"])
+        client.futures_create_order(symbol = symbol, side = "SELL",positionSide="LONG",activationPrice=activationPrice,callbackRate=1, type = "TRAILING_STOP_MARKET", quantity = quantity)  
+    elif side == "SELL":
+        activationPrice = entryPrice-(entryPrice*config["percentForTralingStop"])/(config["leverage"])
+        client.futures_create_order(symbol = symbol, side = "BUY",positionSide="SHORT",activationPrice=activationPrice,callbackRate=1, type = "TRAILING_STOP_MARKET", quantity = quantity)
+    
+    print('activation_price: '+ str(activationPrice))
+    
         
 
 @app.route("/", methods=['GET'])
@@ -81,8 +97,7 @@ def openTradeFuture():
 
  
     precisedQuantity= config["amount"]/float(symbolPrice["price"])
-    print('precisedQuantity:'+str(precisedQuantity))
-    print('precisedDownward:'+str(downward(precisedQuantity)))
+
             
     # quantity=precisedQuantity
     if precisedQuantity > 0:
@@ -94,27 +109,28 @@ def openTradeFuture():
 
     side = data["side"].upper()
     
-    # if side == "BUY":
-    #     try:
-    #         fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
-    #         # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
-    #         client.futures_create_order(symbol = data["symbol"], side = side,positionSide="SHORT", type = 'MARKET', quantity = quantity)
-    #     except BinanceAPIException as e:
-    #         print(str(e))
-    # elif side == "SELL":
-    #     try:
-    #         fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
-    #         # client.futures_create_order(symbol = data["symbol"], side = data["side"],positionSide=data["positionSide"], type = 'MARKET', quantity = quantity)
-    #         client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
-    #     except BinanceAPIException as e:
-    #         print(str(e))
-    
-    if side == "SELL":
+    if side == "BUY":
+        try:
+            fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
+            setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
+            client.futures_create_order(symbol = data["symbol"], side = side,positionSide="SHORT", type = 'MARKET', quantity = quantity)
+        except BinanceAPIException as e:
+            print(str(e))
+    elif side == "SELL":
         try:
             fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
+            setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
             client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
         except BinanceAPIException as e:
             print(str(e))
+    
+    # if side == "SELL":
+    #     try:
+    #         fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
+    #         setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
+    #         client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
+    #     except BinanceAPIException as e:
+    #         print(str(e))
     
    
     return {"symbol" : data["symbol"],"Margin": quantity}
