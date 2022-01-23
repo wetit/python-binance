@@ -24,7 +24,7 @@ config = {
     "type": "MARKET",
     "takeProfitPercent": 0.07,
     "callbackRate": 1,
-    "percentForTralingStop":0.04,
+    "percentForTralingStop":0.02,
 }
 
 @app.route("/test-take-profit", methods=['GET'])
