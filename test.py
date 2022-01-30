@@ -28,23 +28,23 @@ config = {
     "percentForTralingStop":0.03,
 }
 
-@app.route("/test", methods=['GET'])
-def connect():
-    mydb = mysql.connector.connect(
-    host="us-cdbr-east-05.cleardb.net",
-    user="b5a353e80bc919",
-    password="419690e3",
-    database="heroku_8669fd8463fbb6"
-    )
+# @app.route("/test", methods=['GET'])
+# def connect():
+#     mydb = mysql.connector.connect(
+#     host="us-cdbr-east-05.cleardb.net",
+#     user="b5a353e80bc919",
+#     password="419690e3",
+#     database="heroku_8669fd8463fbb6"
+#     )
     
-    mycursor = mydb.cursor()
+#     mycursor = mydb.cursor()
 
-    mycursor.execute("SELECT * FROM config")
+#     mycursor.execute("SELECT * FROM config")
 
-    myresult = mycursor.fetchone()
+#     myresult = mycursor.fetchone()
 
-    print(myresult)
-    return 'success'
+#     print(myresult)
+#     return 'success'
 
 
 
