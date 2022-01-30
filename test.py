@@ -8,7 +8,6 @@ from binance.exceptions import BinanceAPIException
 import os
 import json
 import math
-import mysql.connector
 
 app = Flask(__name__)
 api = Api(app)
