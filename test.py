@@ -27,23 +27,7 @@ config = {
     "percentForTralingStop":0.03,
 }
 
-# @app.route("/test", methods=['GET'])
-# def connect():
-#     mydb = mysql.connector.connect(
-#     host="us-cdbr-east-05.cleardb.net",
-#     user="b5a353e80bc919",
-#     password="419690e3",
-#     database="heroku_8669fd8463fbb6"
-#     )
-    
-#     mycursor = mydb.cursor()
 
-#     mycursor.execute("SELECT * FROM config")
-
-#     myresult = mycursor.fetchone()
-
-#     print(myresult)
-#     return 'success'
 
 
 
@@ -52,10 +36,8 @@ def fireOrder(symbol,side,type,quantity):
     try:
         if side == "BUY":
             client.futures_create_order(symbol = symbol, side = side,positionSide="LONG", type = type, quantity = quantity)
-            # client.futures_create_order(symbol = symbol, side = side,positionSide="LONG", type = "TAKE_PROFIT_MARKET",stopPrice = price + (price*config["takeProfitPercent"]))
         else:
             client.futures_create_order(symbol = symbol, side = side,positionSide="SHORT", type = type, quantity = quantity)
-            # client.futures_create_order(symbol = symbol, side = side,positionSide="SHORT", type = "TAKE_PROFIT_MARKET",stopPrice = price - (price*config["takeProfitPercent"]))
     except BinanceAPIException as e:
         print(str(e))
         
@@ -91,7 +73,8 @@ def downward(value):
 @app.route("/open-trade-future", methods=['POST'])
 def openTradeFuture():
     data = json.loads(request.data)
-
+    print(str(data))
+    
     # set margin type
     try:
         client.futures_change_margin_type(symbol=data["symbol"],marginType=config["marginType"])
