@@ -8,6 +8,7 @@ from binance.exceptions import BinanceAPIException
 import os
 import json
 import math
+import mysql.connector
 
 app = Flask(__name__)
 api = Api(app)
@@ -18,24 +19,34 @@ client = Client("QZnNV8z2rEjhyu3Eq47NVZWmSRNCcJ7eej8xeDa4CEHxLGH2DBifj9IWF9XM9Rt
 
 
 config = {
-    "amount": 16,
+    "amount": 15,
     "marginType": "CROSSED",
     "leverage": 2,
     "type": "MARKET",
     "takeProfitPercent": 0.07,
     "callbackRate": 1,
-    "percentForTralingStop":0.02,
+    "percentForTralingStop":0.03,
 }
 
-@app.route("/test-take-profit", methods=['GET'])
-def testSetTakeProfit():
-    setTrailingStop(symbol="ADAUSDT",quantity=5,entryPrice=55,side="SELL")
-    # symbolPrice = client.get_symbol_ticker(symbol="ENJUSDT")
-    # price = float(symbolPrice["price"])  + (float(symbolPrice["price"]) *config["takeProfitPercent"])
-    # print(stopPrice)
-    # takeProfitOrder=client.futures_create_order(symbol = "ENJUSDT", side = "SELL",positionSide="LONG", type = "TAKE_PROFIT_MARKET",stopPrice = stopPrice,priceProtect=True,timeInForce= "GTE_GTC",price=stopPrice)
-    # return takeProfitOrder
+@app.route("/test", methods=['GET'])
+def connect():
+    mydb = mysql.connector.connect(
+    host="us-cdbr-east-05.cleardb.net",
+    user="b5a353e80bc919",
+    password="419690e3",
+    database="heroku_8669fd8463fbb6"
+    )
     
+    mycursor = mydb.cursor()
+
+    mycursor.execute("SELECT * FROM config")
+
+    myresult = mycursor.fetchone()
+
+    print(myresult)
+    return 'success'
+
+
 
 # fire orer and set take profit market
 def fireOrder(symbol,side,type,quantity):
