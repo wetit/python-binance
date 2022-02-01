@@ -23,8 +23,8 @@ config = {
     "leverage": 2,
     "type": "MARKET",
     "takeProfitPercent": 0.07,
-    "callbackRate": 1,
-    "percentForTralingStop":0.03,
+    "callbackRate": 0.5,
+    "percentForTralingStop":0.02,
 }
 
 
@@ -46,10 +46,10 @@ def fireOrder(symbol,side,type,quantity):
 def setTrailingStop(symbol,quantity,entryPrice,side):
     if side == "BUY":
         activationPrice = entryPrice+(entryPrice*config["percentForTralingStop"])/(config["leverage"])
-        client.futures_create_order(symbol = symbol, side = "SELL",positionSide="LONG",activationPrice=activationPrice,callbackRate=1, type = "TRAILING_STOP_MARKET", quantity = quantity)  
+        client.futures_create_order(symbol = symbol, side = "SELL",positionSide="LONG",activationPrice=activationPrice,callbackRate=config["callbackRate"], type = "TRAILING_STOP_MARKET", quantity = quantity)  
     elif side == "SELL":
         activationPrice = entryPrice-(entryPrice*config["percentForTralingStop"])/(config["leverage"])
-        client.futures_create_order(symbol = symbol, side = "BUY",positionSide="SHORT",activationPrice=activationPrice,callbackRate=1, type = "TRAILING_STOP_MARKET", quantity = quantity)
+        client.futures_create_order(symbol = symbol, side = "BUY",positionSide="SHORT",activationPrice=activationPrice,callbackRate=config["callbackRate"], type = "TRAILING_STOP_MARKET", quantity = quantity)
     
     print('activation_price: '+ str(activationPrice))
     
