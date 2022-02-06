@@ -139,7 +139,7 @@ def openTradeFuture():
         try:
             fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
             setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
-            setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
+            # setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
             client.futures_create_order(symbol = data["symbol"], side = side,positionSide="SHORT", type = 'MARKET', quantity = quantity)
         except BinanceAPIException as e:
             print(str(e))
@@ -147,7 +147,7 @@ def openTradeFuture():
         try:
             fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
             setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
-            setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
+            # setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
             client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
         except BinanceAPIException as e:
             print(str(e))
