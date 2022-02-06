@@ -56,33 +56,33 @@ def setTrailingStop(symbol,quantity,entryPrice,side):
     print('activation_price: '+ str(activationPrice))
     
 
-def setStopMarket(symbol,entryPrice,side):
-    if side == "BUY":
-        positionSide = "LONG"
-        stopPrice = entryPrice - (entryPrice*config["stopMarketPercent"])
-        orderSide = "SELL"
-    elif side == "SELL":
-        positionSide = "SHORT"
-        stopPrice = entryPrice + (entryPrice*config["stopMarketPercent"])
-        orderSide = "BUY"
+# def setStopMarket(symbol,entryPrice,side):
+#     if side == "BUY":
+#         positionSide = "LONG"
+#         stopPrice = entryPrice - (entryPrice*config["stopMarketPercent"])
+#         orderSide = "SELL"
+#     elif side == "SELL":
+#         positionSide = "SHORT"
+#         stopPrice = entryPrice + (entryPrice*config["stopMarketPercent"])
+#         orderSide = "BUY"
     
-    print('stopPrice:'+stopPrice)
+#     print('stopPrice:'+stopPrice)
     
-    try:
-        client.futures_create_order(
-            closePosition=True,
-            placeType="position",
-            positionSide=positionSide,
-            quantity=0,
-            side=orderSide,
-            stopPrice=stopPrice,
-            symbol=symbol,
-            timeInForce="GTE_GTC",
-            type="STOP_MARKET",
-            workingType="MARK_PRICE"  
-        )
-    except BinanceAPIException as e:
-        print("ERROR_STOP_MARKET: "+str(e))
+#     try:
+#         client.futures_create_order(
+#             closePosition=True,
+#             placeType="position",
+#             positionSide=positionSide,
+#             quantity=0,
+#             side=orderSide,
+#             stopPrice=stopPrice,
+#             symbol=symbol,
+#             timeInForce="GTE_GTC",
+#             type="STOP_MARKET",
+#             workingType="MARK_PRICE"  
+#         )
+#     except BinanceAPIException as e:
+#         print("ERROR_STOP_MARKET: "+str(e))
         
    
     
