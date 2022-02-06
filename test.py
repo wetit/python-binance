@@ -89,7 +89,7 @@ def setStopMarket(symbol,entryPrice,side):
 
 @app.route("/", methods=['GET'])
 def test():
-    return {"message": 'success'}
+    return "test"
 
 def downward(value):
     round(value) 
