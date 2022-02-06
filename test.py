@@ -89,7 +89,8 @@ def setStopMarket(symbol,entryPrice,side):
 
 @app.route("/", methods=['GET'])
 def test():
-    return "test"
+    time=datetime.fromtimestamp(int("1641723878511")/1000)
+    return {"message": time}
 
 def downward(value):
     round(value) 
