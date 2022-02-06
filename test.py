@@ -57,6 +57,7 @@ def setTrailingStop(symbol,quantity,entryPrice,side):
     
 
 def setStopMarket(symbol,entryPrice,side):
+    print(side)
     if side == "BUY":
         positionSide = "LONG"
         stopPrice = entryPrice - (entryPrice*config["stopMarketPercent"])
