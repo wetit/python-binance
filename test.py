@@ -66,6 +66,8 @@ def setStopMarket(symbol,entryPrice,side):
         stopPrice = entryPrice + (entryPrice*config["stopMarketPercent"])
         orderSide = "BUY"
     
+    print('stopPrice:'+stopPrice)
+    
     try:
         client.futures_create_order(
             closePosition=True,
