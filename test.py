@@ -66,8 +66,6 @@ def setStopMarket(symbol,entryPrice,side):
         stopPrice = entryPrice + (entryPrice*config["stopMarketPercent"])
         orderSide = "BUY"
     
-    print('stopPrice:'+ str(stopPrice))
-    
     try:
         client.futures_create_order(
             closePosition=True,
@@ -90,8 +88,8 @@ def setStopMarket(symbol,entryPrice,side):
 
 @app.route("/", methods=['GET'])
 def test():
-    time=datetime.fromtimestamp(int("1641723878511")/1000)
-    return {"message": time}
+    
+    return {"message": 'success'}
 
 def downward(value):
     round(value) 
