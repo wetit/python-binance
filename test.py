@@ -135,6 +135,7 @@ def openTradeFuture():
     
     if side == "BUY":
         try:
+            client.futures_cancel_all_open_orders(symbol=data["symbol"])
             fireOrder(symbol = data["symbol"], side = side, type = 'MARKET', quantity = quantity)
             setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
             setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
@@ -143,6 +144,7 @@ def openTradeFuture():
             print(str(e))
     elif side == "SELL":
         try:
+            client.futures_cancel_all_open_orders(symbol=data["symbol"])
             fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
             setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
             setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
