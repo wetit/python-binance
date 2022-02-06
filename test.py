@@ -73,7 +73,7 @@ def setStopMarket(symbol,entryPrice,side):
             positionSide=positionSide,
             quantity=0,
             side=orderSide,
-            stopPrice=stopPrice,
+            stopPrice=round(stopPrice,3),
             symbol=symbol,
             timeInForce="GTE_GTC",
             type="STOP_MARKET",
