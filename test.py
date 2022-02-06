@@ -59,11 +59,11 @@ def setStopMarket(symbol,entryPrice,side):
     print(side)
     if side == "BUY":
         positionSide = "LONG"
-        stopPrice = entryPrice - (entryPrice*config["stopMarketPercent"])
+        stopPrice = entryPrice - (entryPrice*config["stopMarketPercent"])/config["leverage"]
         orderSide = "SELL"
     elif side == "SELL":
         positionSide = "SHORT"
-        stopPrice = entryPrice + (entryPrice*config["stopMarketPercent"])
+        stopPrice = entryPrice + (entryPrice*config["stopMarketPercent"])/config["leverage"]
         orderSide = "BUY"
     
     try:
