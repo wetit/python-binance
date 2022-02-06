@@ -1,4 +1,3 @@
-from turtle import position
 from flask import Flask, request
 from flask_restful import Api, Resource
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
