@@ -8,6 +8,8 @@ from binance.exceptions import BinanceAPIException
 import os
 import json
 import math
+import decimal 
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -54,9 +56,18 @@ def setTrailingStop(symbol,quantity,entryPrice,side):
     
     print('activation_price: '+ str(activationPrice))
     
+    
+
+
+def maximumDecimalPlace(symbol):
+    info = client.get_symbol_info(symbol)
+    temp = info["filters"][0]["tickSize"]
+    result = abs(decimal.Decimal(temp.rstrip('0')).as_tuple().exponent)
+        
+    return result
+    
 
 def setStopMarket(symbol,entryPrice,side):
-    print(side)
     if side == "BUY":
         positionSide = "LONG"
         stopPrice = entryPrice-(entryPrice*config["stopMarketPercent"])/(config["leverage"])
@@ -73,7 +84,7 @@ def setStopMarket(symbol,entryPrice,side):
             positionSide=positionSide,
             quantity=0,
             side=orderSide,
-            stopPrice=round(stopPrice,3),
+            stopPrice=round(stopPrice,maximumDecimalPlace(symbol=symbol)),
             symbol=symbol,
             timeInForce="GTE_GTC",
             type="STOP_MARKET",
