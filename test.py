@@ -28,8 +28,15 @@ config = {
     "callbackRate": 0.5,
     "percentForTralingStop":0.04,
     "stopMarketPercent":0.10,
+    "phase":"BUY"
 }
 
+@app.route("/change-phase", methods=['POST'])
+def phase():
+    data = json.loads(request.data)
+    old_phase=config["phase"]
+    config["phase"] = data["phase"]
+    return {"result": config,"old_phase":old_phase}
 
 
 
@@ -54,7 +61,6 @@ def setTrailingStop(symbol,quantity,entryPrice,side):
         activationPrice = entryPrice-(entryPrice*config["percentForTralingStop"])/(config["leverage"])
         client.futures_create_order(symbol = symbol, side = "BUY",positionSide="SHORT",activationPrice=activationPrice,callbackRate=config["callbackRate"], type = "TRAILING_STOP_MARKET", quantity = quantity)
     
-    print('activation_price: '+ str(activationPrice))
     
     
 
@@ -115,8 +121,16 @@ def downward(value):
 
 
 @app.route("/open-trade-future", methods=['POST'])
-def openTradeFuture():
-    data = json.loads(request.data)
+def checkPhase():
+    data=json.loads(request.data)
+    if data["side"] == config["phase"]:
+        openTradeFuture(data=data)
+        return {"status":"execute success"}
+    else:
+        return {"message":"Invalid phase"}
+
+def openTradeFuture(data):
+    # data = json.loads(request.data)
     print(str(data))
     
     # set margin type
@@ -161,7 +175,7 @@ def openTradeFuture():
             fireOrder(symbol = data["symbol"], side = side,type = 'MARKET', quantity = quantity)
             setTrailingStop(symbol = data["symbol"], quantity = quantity,entryPrice=float(symbolPrice["price"]), side = side)
             setStopMarket(symbol = data["symbol"],entryPrice=float(symbolPrice["price"]),side = side)
-            # client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
+            client.futures_create_order(symbol = data["symbol"], side = side,positionSide="LONG", type = 'MARKET', quantity = quantity)  
         except BinanceAPIException as e:
             print(str(e))
     
