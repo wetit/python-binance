@@ -102,7 +102,14 @@ def setStopMarket(symbol,entryPrice,side):
 
 def cancelOrder(symbol):
     client.futures_cancel_all_open_orders(symbol=symbol)
-    
+
+def checkPhase():
+    data=json.loads(request.data)
+    if data["side"] == config["phase"]:
+        openTradeFuture(data=data)
+        return {"status":"execute success"}
+    else:
+        return {"message":"Invalid phase"}
         
 
 @app.route("/", methods=['GET'])
@@ -121,16 +128,8 @@ def downward(value):
 
 
 @app.route("/open-trade-future", methods=['POST'])
-def checkPhase():
-    data=json.loads(request.data)
-    if data["side"] == config["phase"]:
-        openTradeFuture(data=data)
-        return {"status":"execute success"}
-    else:
-        return {"message":"Invalid phase"}
-
 def openTradeFuture(data):
-    # data = json.loads(request.data)
+    data = json.loads(request.data)
     print(str(data))
     
     # set margin type
