@@ -128,7 +128,7 @@ def downward(value):
 
 
 @app.route("/open-trade-future", methods=['POST'])
-def openTradeFuture(data):
+def openTradeFuture():
     data = json.loads(request.data)
     print(str(data))
     
