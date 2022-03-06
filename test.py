@@ -24,9 +24,9 @@ config = {
     "leverage": 10,
     "type": "MARKET",
     "takeProfitPercent": 0.1,
-    "callbackRate": 1,
-    "percentForTralingStop": 0.10,
-    "stopMarketPercent": 0.10,
+    "callbackRate": 0.5,
+    "percentForTralingStop": 0.1,
+    "stopMarketPercent": 0.1,
 }
 
 
