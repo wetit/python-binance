@@ -23,7 +23,7 @@ config = {
     "marginType": "CROSSED",
     "leverage": 10,
     "type": "MARKET",
-    "takeProfitPercent": 0.1,
+    "takeProfitPercent": 0.15,
     "callbackRate": 0.5,
     "percentForTralingStop": 0.1,
     "stopMarketPercent": 0.1,
