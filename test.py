@@ -25,7 +25,7 @@ config = {
     "type": "MARKET",
     "takeProfitPercent": 0.3,
     "callbackRate": 0.5,
-    "percentForTralingStop": 0.15,
+    "percentForTralingStop": 0.10,
     "stopMarketPercent": 0.1,
 }
 
