@@ -21,10 +21,10 @@ client = Client("QZnNV8z2rEjhyu3Eq47NVZWmSRNCcJ7eej8xeDa4CEHxLGH2DBifj9IWF9XM9Rt
 config = {
     "amount": 9,
     "marginType": "CROSSED",
-    "leverage": 10,
+    "leverage": 5,
     "type": "MARKET",
-    "takeProfitPercent": 0.3,
-    "callbackRate": 0.5,
+    "takeProfitPercent": 0.2,
+    "callbackRate": 0.3,
     "percentForTralingStop": 0.10,
     "stopMarketPercent": 0.1,
 }
