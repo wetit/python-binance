@@ -23,9 +23,9 @@ config = {
     "marginType": "CROSSED",
     "leverage": 5,
     "type": "MARKET",
-    "takeProfitPercent": 0.2,
-    "callbackRate": 0.3,
-    "percentForTralingStop": 0.10,
+    "takeProfitPercent": 0.3,
+    "callbackRate": 1,
+    "percentForTralingStop": 0.05,
     "stopMarketPercent": 0.1,
 }
 
@@ -137,19 +137,19 @@ def openTradeFuture():
 
     if side == "BUY":
         try:
-            # cancelOrder(symbol=data["symbol"])
+            cancelOrder(symbol=data["symbol"])
             fireOrder(symbol=data["symbol"], side=side, type='MARKET', quantity=quantity)
             setTrailingStop(symbol=data["symbol"], quantity=quantity, entryPrice=float(symbolPrice["price"]), side=side)
-            setStopMarket(symbol=data["symbol"], entryPrice=float(symbolPrice["price"]), side=side)
+            # setStopMarket(symbol=data["symbol"], entryPrice=float(symbolPrice["price"]), side=side)
             client.futures_create_order(symbol=data["symbol"], side=side, positionSide="SHORT", type='MARKET', quantity=quantity)
         except BinanceAPIException as e:
             print(str(e))
     elif side == "SELL":
         try:
-            # cancelOrder(symbol=data["symbol"])
+            cancelOrder(symbol=data["symbol"])
             fireOrder(symbol=data["symbol"], side=side, type='MARKET', quantity=quantity)
             setTrailingStop(symbol=data["symbol"], quantity=quantity, entryPrice=float(symbolPrice["price"]), side=side)
-            setStopMarket(symbol=data["symbol"], entryPrice=float(symbolPrice["price"]), side=side)
+            # setStopMarket(symbol=data["symbol"], entryPrice=float(symbolPrice["price"]), side=side)
             client.futures_create_order(symbol=data["symbol"], side=side, positionSide="LONG", type='MARKET', quantity=quantity)
         except BinanceAPIException as e:
             print(str(e))
