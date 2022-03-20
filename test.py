@@ -19,8 +19,8 @@ client = Client("QZnNV8z2rEjhyu3Eq47NVZWmSRNCcJ7eej8xeDa4CEHxLGH2DBifj9IWF9XM9Rt
 
 
 config = {
-    "amount": 20,
-    "marginType": "CROSSED",
+    "amount": 10,
+    "marginType": "ISOLATED",
     "leverage": 2,
     "type": "MARKET",
     "takeProfitPercent": 0.2,
